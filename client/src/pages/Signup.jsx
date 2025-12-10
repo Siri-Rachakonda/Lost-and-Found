@@ -1,25 +1,38 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import axiosInstance from '../api/axiosConfig'
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
+  const navigate=useNavigate();
+  const [form, setForm] = useState({
     username: '',
     email: '',
     password: ''
   })
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setForm({
+      ...form,
       [e.target.name]: e.target.value
     })
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle signup logic here
-    console.log('Signup data:', formData)
-  }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log(form);
+
+        const response=await axiosInstance.post('/auth/register',form);
+        console.log(response);
+        if(response.status===201){
+         navigate('/login')
+        }
+        setForm({
+        email: "",
+        password: "",
+        username:""
+        });
+    };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-50 to-white flex items-center justify-center px-4 py-12">
@@ -43,7 +56,7 @@ const Signup = () => {
                 type="text"
                 id="username"
                 name="username"
-                value={formData.username}
+                value={form.username}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
@@ -60,7 +73,7 @@ const Signup = () => {
                 type="email"
                 id="email"
                 name="email"
-                value={formData.email}
+                value={form.email}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
@@ -77,7 +90,7 @@ const Signup = () => {
                 type="password"
                 id="password"
                 name="password"
-                value={formData.password}
+                value={form.password}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"

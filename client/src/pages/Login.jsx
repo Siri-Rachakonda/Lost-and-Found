@@ -1,24 +1,36 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import axiosInstance from '../api/axiosConfig'
 
 const Login = () => {
-  const [formData, setFormData] = useState({
+   const navigate=useNavigate();
+  const [form, setForm] = useState({
     email: '',
     password: ''
   })
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setForm({
+      ...form,
       [e.target.name]: e.target.value
     })
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle login logic here
-    console.log('Login data:', formData)
-  }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log(form);
+
+        const response=await axiosInstance.post('/auth/login',form);
+        console.log(response);
+        // if(response.status===200){
+         navigate('/home')
+        // }
+        setForm({
+        email: "",
+        password: "",
+        });
+    };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center px-4 py-12">
@@ -42,7 +54,7 @@ const Login = () => {
                 type="email"
                 id="email"
                 name="email"
-                value={formData.email}
+                value={form.email}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
@@ -59,7 +71,7 @@ const Login = () => {
                 type="password"
                 id="password"
                 name="password"
-                value={formData.password}
+                value={form.password}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
